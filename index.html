@@ -1,276 +1,250 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Happy Birthday My Love ❤️</title>
-    
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Great+Vibes&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- AOS Animation Library -->
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    
-    <!-- Animate.css -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
-    
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffd6e7">
+  <title>Happy Birthday ❤️</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;600&family=Great+Vibes&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <!-- CSS frameworks / libraries (CDN) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+
+  <!-- Our styles (loaded last so they win) -->
+  <link href="css/style.css" rel="stylesheet">
 </head>
-<body class="bg-gradient-to-br from-pink-100 via-rose-200 to-purple-200 min-h-screen overflow-x-hidden">
-    
-    <!-- Custom Cursor -->
-    <div id="cursor" class="custom-cursor"></div>
-    
-    <!-- Loader / Intro Section -->
-    <div id="loader" class="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-pink-200 via-rose-300 to-purple-300">
+<body class="locked">
+
+  <noscript><p style="padding:2rem;text-align:center">Please enable JavaScript to see your surprise ❤️</p></noscript>
+
+  <!-- Night-sky stars (filled by JS, visible only in night mode) -->
+  <div class="stars" id="stars" aria-hidden="true"></div>
+
+  <!-- Particle canvas: hearts, confetti, fireworks -->
+  <canvas id="fx" aria-hidden="true"></canvas>
+
+  <!-- 1. Heart loader -->
+  <div id="loader" aria-label="Loading"><div class="heart-loader"></div></div>
+
+  <!-- 1b. Envelope gate -->
+  <div id="gate">
+    <div>
+      <p class="gate-hint">A little surprise is waiting for you…</p>
+      <button class="envelope" id="envelope" aria-label="Open your surprise">
+        <span class="env-back"></span>
+        <span class="env-letter"><span class="heart-big">❤</span><span class="for" id="envFor">For you</span></span>
+        <span class="env-front"></span>
+        <span class="env-flap"></span>
+        <span class="env-seal">❤</span>
+      </button>
+      <p class="gate-tap" id="gateTap">Tap the envelope to open it</p>
+    </div>
+  </div>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg fixed-top navbar-love" id="nav">
+    <div class="container">
+      <a class="navbar-brand" href="#home" id="navBrand">❤</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu" aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navMenu">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="#story">Our Story</a></li>
+          <li class="nav-item"><a class="nav-link" href="#gallery">Gallery</a></li>
+          <li class="nav-item"><a class="nav-link" href="#memories">Memories</a></li>
+          <li class="nav-item"><a class="nav-link" href="#reasons">Reasons</a></li>
+          <li class="nav-item"><a class="nav-link" href="#letter">Letter</a></li>
+          <li class="nav-item"><a class="nav-link" href="#wish">Wish</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main id="app">
+
+    <!-- 2. HERO -->
+    <section id="home" class="hero">
+      <div class="container text-center">
+        <p class="hero-pre hero-fade" id="heroPre"></p>
+        <h1 class="hero-title" aria-live="polite">
+          <span class="hero-line1" id="heroLine1"></span>
+          <span class="hero-name" id="heroName"></span>
+        </h1>
+        <p class="hero-sub hero-fade" id="heroSub"></p>
+
+        <div id="countdownWrap" class="hero-fade">
+          <p class="cd-label">Counting down to your special day</p>
+          <div class="cd" id="countdown">
+            <div class="cd-box glass"><b id="cdDays">00</b><small>Days</small></div>
+            <div class="cd-box glass"><b id="cdHours">00</b><small>Hours</small></div>
+            <div class="cd-box glass"><b id="cdMins">00</b><small>Minutes</small></div>
+            <div class="cd-box glass"><b id="cdSecs">00</b><small>Seconds</small></div>
+          </div>
+        </div>
+
+        <div id="todayBanner" class="today glass" hidden>
+          <h2 id="todayTitle">Today is your day!</h2>
+        </div>
+
+        <div class="hero-actions hero-fade">
+          <button class="btn-love" id="btnSurprise">🎉 Tap for a surprise</button>
+          <button class="btn-ghost" id="btnFireworks">🎆 Fireworks</button>
+        </div>
+        <a href="#story" class="scroll-hint hero-fade">Scroll down ↓</a>
+      </div>
+    </section>
+
+    <!-- 3. OUR STORY / TIMELINE -->
+    <section id="story">
+      <div class="container">
+        <h2 class="section-title" data-aos="fade-up">Our Story</h2>
+        <p class="section-sub" data-aos="fade-up">Tap each moment to open the memory ♡</p>
+
+        <div class="together glass" data-aos="zoom-in">
+          <button class="btn-love" id="btnTogether">💞 How long have we been together?</button>
+          <div id="togetherBox" hidden>
+            <div class="together-num" id="togetherNum">0</div>
+            <p class="together-text" id="togetherText"></p>
+          </div>
+        </div>
+
+        <div class="timeline" id="timeline"></div>
+      </div>
+    </section>
+
+    <!-- 4. GALLERY -->
+    <section id="gallery">
+      <div class="container">
+        <h2 class="section-title" data-aos="fade-up">Our Gallery</h2>
+        <p class="section-sub" data-aos="fade-up">Tap any photo to open it. Swipe or use the arrow keys to browse.</p>
+        <div class="gallery" id="galleryGrid"></div>
+      </div>
+    </section>
+
+    <!-- 5. MEMORIES (flip cards) -->
+    <section id="memories">
+      <div class="container">
+        <h2 class="section-title" data-aos="fade-up">Memories</h2>
+        <p class="section-sub" data-aos="fade-up">Tap a card to flip it and read what I remember.</p>
+        <div class="flip-grid" id="memoryGrid"></div>
+      </div>
+    </section>
+
+    <!-- 6. REASONS (heart jar) -->
+    <section id="reasons">
+      <div class="container">
+        <h2 class="section-title" data-aos="fade-up">Reasons I Love You</h2>
+        <p class="section-sub" data-aos="fade-up">Every heart in this jar is a reason. Tap the jar to pull one out.</p>
+
+        <div class="jar-wrap" id="jarWrap" data-aos="zoom-in">
+          <div class="jar-lid"></div>
+          <div class="jar"><div class="jar-fill" id="jarFill"></div></div>
+        </div>
+        <p class="reason-count" id="reasonCount"></p>
+        <div class="reason-card glass" id="reasonText">Tap the button below ♡</div>
         <div class="text-center">
-            <div class="heart-loader mb-8">
-                <div class="heart"></div>
-            </div>
-            <p class="text-2xl font-dancing text-rose-700 animate-pulse">Loading your surprise...</p>
+          <button class="btn-love" id="btnReason">💌 Pull out a reason</button>
         </div>
-    </div>
-    
-    <!-- Envelope / Gift Box -->
-    <div id="envelope-container" class="fixed inset-0 z-40 hidden items-center justify-center bg-gradient-to-br from-pink-200 via-rose-300 to-purple-300">
-        <div id="envelope" class="envelope cursor-pointer transform hover:scale-105 transition-transform duration-300">
-            <div class="envelope-flap"></div>
-            <div class="envelope-body">
-                <p class="text-white text-xl font-dancing mt-4">Tap to open your surprise 💌</p>
+        <div class="chips" id="reasonList"></div>
+      </div>
+    </section>
+
+    <!-- 7. LOVE LETTER -->
+    <section id="letter">
+      <div class="container">
+        <h2 class="section-title" data-aos="fade-up">A Letter For You</h2>
+        <div class="letter-wrap">
+          <div class="seal-wrap" id="sealWrap" data-aos="zoom-in">
+            <button class="seal" id="sealBtn" aria-label="Break the seal to open the letter">❤</button>
+            <p class="seal-hint">Tap the seal to open</p>
+          </div>
+          <div class="paper-wrap" id="paperWrap">
+            <div class="paper" id="paper">
+              <div class="paper-in">
+                <h3 id="letterTitle"></h3>
+                <div id="letterBody"></div>
+                <div class="sign" id="letterSign"></div>
+                <p class="paper-skip" id="paperSkip">Tap the letter to show everything at once</p>
+              </div>
             </div>
+          </div>
         </div>
-    </div>
-    
-    <!-- Music Player -->
-    <div id="music-player" class="fixed top-24 right-4 z-30 glassmorphism rounded-full p-3 hidden">
-        <button id="music-toggle" class="text-rose-600 hover:text-rose-800 transition-colors">
-            <svg id="play-icon" class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
-            </svg>
-            <svg id="pause-icon" class="w-6 h-6 hidden" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M5.75 3a.75.75 0 00-.75.75v12.5c0 .414.336.75.75.75h1.5a.75.75 0 00.75-.75V3.75A.75.75 0 007.25 3h-1.5zM12.75 3a.75.75 0 00-.75.75v12.5c0 .414.336.75.75.75h1.5a.75.75 0 00.75-.75V3.75a.75.75 0 00-.75-.75h-1.5z"/>
-            </svg>
-        </button>
-        <input type="range" id="volume-slider" min="0" max="100" value="50" class="w-20 ml-2 accent-rose-500">
-    </div>
-    
-    <!-- Night Mode Toggle -->
-    <button id="night-toggle" class="fixed top-4 right-4 z-30 glassmorphism rounded-full p-3 hidden text-rose-600 hover:text-rose-800 transition-colors">
-        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/>
-        </svg>
-    </button>
-    
-    <!-- Main Content -->
-    <div id="main-content" class="hidden">
-        
-        <!-- Navbar -->
-        <nav id="navbar" class="fixed top-0 left-0 right-0 z-20 transition-all duration-300">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between items-center h-16">
-                    <div class="text-rose-700 font-dancing text-2xl">❤️</div>
-                    <div class="hidden md:flex space-x-8">
-                        <a href="#hero" class="text-rose-700 hover:text-rose-900 transition-colors font-poppins">Home</a>
-                        <a href="#timeline" class="text-rose-700 hover:text-rose-900 transition-colors font-poppins">Our Story</a>
-                        <a href="#gallery" class="text-rose-700 hover:text-rose-900 transition-colors font-poppins">Gallery</a>
-                        <a href="#memories" class="text-rose-700 hover:text-rose-900 transition-colors font-poppins">Memories</a>
-                        <a href="#reasons" class="text-rose-700 hover:text-rose-900 transition-colors font-poppins">Love</a>
-                        <a href="#letter" class="text-rose-700 hover:text-rose-900 transition-colors font-poppins">Letter</a>
-                        <a href="#surprise" class="text-rose-700 hover:text-rose-900 transition-colors font-poppins">Surprise</a>
-                    </div>
-                    <button id="mobile-menu-btn" class="md:hidden text-rose-700">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-            <!-- Mobile Menu -->
-            <div id="mobile-menu" class="hidden md:hidden glassmorphism">
-                <div class="px-2 pt-2 pb-3 space-y-1">
-                    <a href="#hero" class="block px-3 py-2 text-rose-700 hover:text-rose-900 font-poppins">Home</a>
-                    <a href="#timeline" class="block px-3 py-2 text-rose-700 hover:text-rose-900 font-poppins">Our Story</a>
-                    <a href="#gallery" class="block px-3 py-2 text-rose-700 hover:text-rose-900 font-poppins">Gallery</a>
-                    <a href="#memories" class="block px-3 py-2 text-rose-700 hover:text-rose-900 font-poppins">Memories</a>
-                    <a href="#reasons" class="block px-3 py-2 text-rose-700 hover:text-rose-900 font-poppins">Love</a>
-                    <a href="#letter" class="block px-3 py-2 text-rose-700 hover:text-rose-900 font-poppins">Letter</a>
-                    <a href="#surprise" class="block px-3 py-2 text-rose-700 hover:text-rose-900 font-poppins">Surprise</a>
-                </div>
-            </div>
-        </nav>
-        
-        <!-- Hero Section -->
-        <section id="hero" class="min-h-screen flex items-center justify-center relative overflow-hidden pt-16">
-            <canvas id="hero-canvas" class="absolute inset-0"></canvas>
-            <div class="text-center z-10 px-4">
-                <h1 id="hero-heading" class="text-5xl md:text-7xl lg:text-8xl font-great-vibes text-rose-700 mb-6 animate__animated animate__fadeInDown"></h1>
-                <p id="hero-subheading" class="text-xl md:text-2xl font-poppins text-rose-600 mb-8 animate__animated animate__fadeInUp animate__delay-1s"></p>
-                
-                <!-- Countdown -->
-                <div id="countdown" class="glassmorphism rounded-2xl p-6 md:p-8 max-w-2xl mx-auto mb-8 animate__animated animate__fadeInUp animate__delay-2s">
-                    <h2 class="text-2xl font-dancing text-rose-700 mb-4">Countdown to Your Special Day</h2>
-                    <div class="grid grid-cols-4 gap-4">
-                        <div class="text-center">
-                            <div id="days" class="text-3xl md:text-5xl font-bold text-rose-700">00</div>
-                            <div class="text-sm font-poppins text-rose-600">Days</div>
-                        </div>
-                        <div class="text-center">
-                            <div id="hours" class="text-3xl md:text-5xl font-bold text-rose-700">00</div>
-                            <div class="text-sm font-poppins text-rose-600">Hours</div>
-                        </div>
-                        <div class="text-center">
-                            <div id="minutes" class="text-3xl md:text-5xl font-bold text-rose-700">00</div>
-                            <div class="text-sm font-poppins text-rose-600">Minutes</div>
-                        </div>
-                        <div class="text-center">
-                            <div id="seconds" class="text-3xl md:text-5xl font-bold text-rose-700">00</div>
-                            <div class="text-sm font-poppins text-rose-600">Seconds</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Celebration Message (hidden initially) -->
-                <div id="celebration" class="hidden">
-                    <h2 class="text-4xl md:text-6xl font-great-vibes text-rose-700 animate__animated animate__pulse">Today is Your Day! 🎉</h2>
-                </div>
-                
-                <a href="#timeline" class="inline-block mt-8 glassmorphism px-8 py-3 rounded-full text-rose-700 font-poppins hover:bg-rose-700 hover:text-white transition-all duration-300 animate__animated animate__fadeInUp animate__delay-3s">
-                    Our Story ↓
-                </a>
-            </div>
-            
-            <!-- Floating Hearts -->
-            <div class="floating-hearts"></div>
-        </section>
-        
-        <!-- Timeline Section -->
-        <section id="timeline" class="py-20 px-4 relative">
-            <div class="max-w-4xl mx-auto">
-                <h2 class="text-4xl md:text-5xl font-great-vibes text-rose-700 text-center mb-16" data-aos="fade-up">Our Love Story</h2>
-                <div id="timeline-container" class="relative">
-                    <!-- Timeline events will be injected here -->
-                </div>
-            </div>
-        </section>
-        
-        <!-- Photo Gallery Section -->
-        <section id="gallery" class="py-20 px-4 bg-gradient-to-br from-rose-100 to-pink-200">
-            <div class="max-w-7xl mx-auto">
-                <h2 class="text-4xl md:text-5xl font-great-vibes text-rose-700 text-center mb-16" data-aos="fade-up">Our Memories</h2>
-                <div id="gallery-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                    <!-- Gallery items will be injected here -->
-                </div>
-            </div>
-        </section>
-        
-        <!-- Lightbox -->
-        <div id="lightbox" class="fixed inset-0 z-50 hidden bg-black bg-opacity-90 flex items-center justify-center">
-            <button id="lightbox-close" class="absolute top-4 right-4 text-white text-4xl hover:text-rose-500 transition-colors">&times;</button>
-            <button id="lightbox-prev" class="absolute left-4 text-white text-4xl hover:text-rose-500 transition-colors">&larr;</button>
-            <button id="lightbox-next" class="absolute right-4 text-white text-4xl hover:text-rose-500 transition-colors">&rarr;</button>
-            <img id="lightbox-img" class="max-w-full max-h-[90vh] object-contain" src="" alt="">
+      </div>
+    </section>
+
+    <!-- 8. WISH / CAKE -->
+    <section id="wish">
+      <div class="container">
+        <h2 class="section-title" data-aos="fade-up">Make a Wish</h2>
+        <p class="section-sub" data-aos="fade-up">Tap the cake to spin it. Tap a flame, press the button, or blow into your mic.</p>
+
+        <div class="cake-stage">
+          <div class="cake" id="cake" aria-label="Birthday cake">
+            <div class="candles" id="candles"></div>
+            <div class="tier t1"></div>
+            <div class="tier t2"></div>
+            <div class="tier t3"></div>
+            <div class="plate"></div>
+          </div>
+
+          <div class="cake-actions">
+            <button class="btn-love" id="btnBlow">💨 Blow the candles</button>
+            <button class="btn-ghost" id="btnMic">🎤 Use my microphone</button>
+            <button class="btn-ghost" id="btnRelight" hidden>🕯️ Light them again</button>
+          </div>
+          <p class="mic-status" id="micStatus" aria-live="polite"></p>
+
+          <div class="wish" id="wishMsg">
+            <h3 id="wishTitle"></h3>
+            <p id="wishSub"></p>
+          </div>
         </div>
-        
-        <!-- Memories Flip Cards Section -->
-        <section id="memories" class="py-20 px-4">
-            <div class="max-w-7xl mx-auto">
-                <h2 class="text-4xl md:text-5xl font-great-vibes text-rose-700 text-center mb-16" data-aos="fade-up">Special Moments</h2>
-                <div id="flip-cards" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                    <!-- Flip cards will be injected here -->
-                </div>
-            </div>
-        </section>
-        
-        <!-- Reasons I Love You Section -->
-        <section id="reasons" class="py-20 px-4 bg-gradient-to-br from-purple-100 to-rose-200">
-            <div class="max-w-4xl mx-auto">
-                <h2 class="text-4xl md:text-5xl font-great-vibes text-rose-700 text-center mb-16" data-aos="fade-up">Reasons I Love You</h2>
-                <div id="heart-jar" class="relative">
-                    <div class="glassmorphism rounded-3xl p-8">
-                        <div id="reasons-container" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <!-- Reasons will be injected here -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        
-        <!-- Love Letter Section -->
-        <section id="letter" class="py-20 px-4">
-            <div class="max-w-3xl mx-auto">
-                <h2 class="text-4xl md:text-5xl font-great-vibes text-rose-700 text-center mb-16" data-aos="fade-up">My Letter to You</h2>
-                <div class="parchment-card glassmorphism rounded-lg p-8 md:p-12" data-aos="fade-up">
-                    <p id="love-letter" class="text-lg md:text-xl font-poppins text-rose-800 leading-relaxed"></p>
-                </div>
-            </div>
-        </section>
-        
-        <!-- Surprise / Cake Section -->
-        <section id="surprise" class="py-20 px-4 bg-gradient-to-br from-pink-100 to-purple-200 relative overflow-hidden">
-            <canvas id="fireworks-canvas" class="absolute inset-0"></canvas>
-            <div class="max-w-4xl mx-auto relative z-10">
-                <h2 class="text-4xl md:text-5xl font-great-vibes text-rose-700 text-center mb-16" data-aos="fade-up">Make a Wish</h2>
-                <div class="text-center">
-                    <div id="cake-container" class="relative inline-block mb-8">
-                        <!-- 3D Cake will be rendered here -->
-                        <div class="cake">
-                            <div class="cake-layer cake-layer-1"></div>
-                            <div class="cake-layer cake-layer-2"></div>
-                            <div class="cake-layer cake-layer-3"></div>
-                            <div class="candles">
-                                <div class="candle">
-                                    <div class="flame"></div>
-                                </div>
-                                <div class="candle">
-                                    <div class="flame"></div>
-                                </div>
-                                <div class="candle">
-                                    <div class="flame"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <button id="blow-candles" class="glassmorphism px-8 py-4 rounded-full text-rose-700 font-poppins text-lg hover:bg-rose-700 hover:text-white transition-all duration-300 mb-4">
-                        Blow the Candles 🕯️
-                    </button>
-                    <button id="mic-blow" class="glassmorphism px-8 py-4 rounded-full text-rose-700 font-poppins text-lg hover:bg-rose-700 hover:text-white transition-all duration-300 ml-4">
-                        Use Microphone 🎤
-                    </button>
-                    <p id="wish-message" class="text-2xl font-dancing text-rose-700 mt-8 hidden animate__animated animate__pulse">Make a wish ❤️</p>
-                </div>
-            </div>
-        </section>
-        
-        <!-- Footer -->
-        <footer class="py-12 px-4 bg-gradient-to-br from-rose-300 to-purple-300">
-            <div class="max-w-4xl mx-auto text-center">
-                <p class="text-2xl font-dancing text-rose-800 mb-4">Forever yours,</p>
-                <p id="footer-name" class="text-3xl font-great-vibes text-rose-900 mb-4"></p>
-                <div class="pulsing-heart text-4xl">❤️</div>
-                <button id="back-to-top" class="fixed bottom-8 right-8 glassmorphism rounded-full p-4 text-rose-700 hover:text-rose-900 transition-colors z-30">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
-                    </svg>
-                </button>
-            </div>
-        </footer>
+      </div>
+    </section>
+  </main>
+
+  <!-- 9. FOOTER -->
+  <footer>
+    <button class="foot-heart" id="footerHeart" aria-label="Send love">❤️</button>
+    <div class="foot-text" id="footerText"></div>
+    <button class="btn-ghost" id="toTop">↑ Back to top</button>
+  </footer>
+
+  <!-- Floating controls -->
+  <div class="music glass" id="musicBox">
+    <button id="musicBtn" aria-label="Play music">▶</button>
+    <div class="eq" aria-hidden="true"><span></span><span></span><span></span></div>
+    <input type="range" id="musicVol" min="0" max="1" step="0.05" value="0.6" aria-label="Volume">
+  </div>
+  <button class="theme-btn glass" id="themeBtn" aria-label="Toggle night sky">🌙</button>
+  <div class="toast-msg glass" id="toast" role="status"></div>
+
+  <audio id="bgm" preload="auto"></audio>
+
+  <!-- Lightbox -->
+  <div id="lightbox" aria-hidden="true" role="dialog" aria-label="Photo viewer">
+    <button class="lb-btn lb-close" id="lbClose" aria-label="Close">✕</button>
+    <button class="lb-btn lb-prev" id="lbPrev" aria-label="Previous photo">‹</button>
+    <div class="lb-stage">
+      <img id="lbImg" src="" alt="">
+      <p class="lb-cap" id="lbCap"></p>
+      <span class="lb-count" id="lbCount"></span>
     </div>
-    
-    <!-- Audio Element -->
-    <audio id="bg-music" loop>
-        <source src="audio/song.mp3" type="audio/mpeg">
-    </audio>
-    
-    <!-- AOS Script -->
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    
-    <!-- Custom Script -->
-    <script src="js/script.js"></script>
+    <button class="lb-btn lb-next" id="lbNext" aria-label="Next photo">›</button>
+  </div>
+
+  <!-- Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+  <!-- Our script -->
+  <script src="js/script.js"></script>
 </body>
 </html>
