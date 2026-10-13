@@ -12,8 +12,8 @@
 const CONFIG = {
   herName: "Lizaa",                 // <-- her name
   myName: "Neev",                 // <-- your name
-  birthday: "2026-10-15T00:00:00",     // her birthday, local time (YYYY-MM-DDTHH:MM:SS)
-  startDate: "2024-02-14",             // the day your story began (YYYY-MM-DD)
+  birthday: "2026-10-15T00:00:02",     // her birthday, local time (YYYY-MM-DDTHH:MM:SS)
+  startDate: "2024-10-18",             // the day your story began (YYYY-MM-DD)
   musicFile: "audio/song.mp3",         // put your song in the audio folder
   candleCount: 5,
 
