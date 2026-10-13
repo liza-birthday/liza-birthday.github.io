@@ -91,8 +91,8 @@ const CONFIG = {
   ],
 
   /* Love letter — each string is one paragraph, typed out line by line */
-    letter: {
-    title: "My dearest Lizaa,",
+  letter: {
+    title: "My dearest {name},",
     lines: [
       "Happy Birthday, my love. Today the whole world celebrates the day you were born, and I get to celebrate the reason my life feels so full.",
       "It began at the NCC Ground, on a day that looked completely ordinary. I had no idea that one meeting would quietly become my favourite chapter.",
@@ -103,7 +103,7 @@ const CONFIG = {
       "So on your birthday, this is my wish: that every smile you give away comes back to you twice, that every dream you carry finds its way to you, and that I am right beside you to see it all.",
       "I love you today, tomorrow, and on every day after that."
     ],
-    signature: "Forever yours, Neev ❤"
+    signature: "Forever yours, {me} ❤"
   }
 };
 
