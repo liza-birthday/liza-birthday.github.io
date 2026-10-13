@@ -57,12 +57,18 @@ const CONFIG = {
 
   /* Memories — flip cards (front photo, back text) */
   memories: [
-    { img: "images/photo2.jpg",  title: "That first hello",   text: "Write the memory here. The little details are what make her smile." },
-    { img: "images/photo5.jpg",  title: "Our best day",       text: "The day everything felt perfect, and why." },
-    { img: "images/photo7.jpg",  title: "Inside joke",        text: "Something only the two of you understand." },
-    { img: "images/photo6.jpg",  title: "That trip",          text: "A place you went together and what you'll never forget about it." },
-    { img: "images/photo10.jpg", title: "Quiet moments",      text: "The small, ordinary times that mean the most." },
-    { img: "images/photo12.jpg", title: "Our future",         text: "What you promise her for all the days to come." }
+    { img: "images/photo2.jpg",  title: "That first hello",
+      text: "It all began at the NCC Ground. One simple hello, and somehow I already knew I wanted to hear a thousand more of them." },
+    { img: "images/photo5.jpg",  title: "Our best day",
+      text: "I can't choose just one. Any day that has you in it turns into my best day, and that is my favourite thing about us." },
+    { img: "images/photo7.jpg",  title: "Inside joke",
+      text: "Only the two of us know why we laugh so hard at it. I hope we never explain it to anyone, because some things are better kept just ours." },
+    { img: "images/photo6.jpg",  title: "That trip",
+      text: "Wherever we go, the place matters less than who is beside me. Every trip with you becomes a story I love telling again and again." },
+    { img: "images/photo10.jpg", title: "Quiet moments",
+      text: "It is not the big days I remember most, but the small quiet ones: sitting together without a word and still feeling completely understood." },
+    { img: "images/photo12.jpg", title: "Our future",
+      text: "I don't know everything the future holds, but I know I want you in every part of it. I promise to stand by you, laugh with you, and choose you again every single day." }
   ],
 
   /* Reasons I love you */
