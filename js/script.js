@@ -29,19 +29,16 @@ const CONFIG = {
   /* Our Story — add / remove / edit events freely */
   timeline: [
     { date: "The very beginning", emoji: "✨", title: "The day we met",
-      text: "I didn't know it then, but my whole life was about to change. Write how and where you first met here." },
+      text: "It was an ordinary day at the NCC Ground, and I had no idea it would turn into the most important one. I only knew that something about meeting you felt different. Now, every time I think of that ground, I smile." },
     { date: "Our first date", emoji: "🍽️", title: "Nervous smiles",
-      text: "Describe the place, what you ate, the thing she said that you still remember." },
+      text: "My nervous smile at Basil Valley Cafe says it all. My heart was racing, my words came out wrong, and I couldn't stop looking at you. The coffee went cold and I didn't care, because I was exactly where I wanted to be." },
     { date: "A special day", emoji: "💌", title: "When I knew",
-      text: "The moment you realised she was the one. Make it personal." },
-    { date: "Our first trip", emoji: "🧳", title: "Adventures together",
-      text: "Where did you go? What went wrong and made it even more fun?" },
+      text: "There was no single moment. Slowly, without my even noticing, you became everything to me: my first thought in the morning, my last thought at night, and my favourite part of every day. One day I looked up and realised my whole world had you in it." },
     { date: "A hard day", emoji: "🤝", title: "You stayed",
-      text: "A time you got through something together and came out stronger." },
+      text: "There were days when I was not at my best, and you never walked away. You stayed, you listened, and you held my hand through it all. That is when I understood that love isn't only the happy days, it is the person who stays on the hard ones." },
     { date: "Today", emoji: "🎂", title: "Still choosing you",
-      text: "Every single day, I would choose you again. Happy birthday, my love." }
+      text: "Today is your birthday, and I'm still as grateful as I was at the NCC Ground. If I could start over, I'd choose you again, in every life, on every ordinary day. Happy birthday, my love." }
   ],
-
   /* Gallery — src is the file in /images. caption shows on hover and in the viewer */
   photos: [
     { src: "images/photo1.jpg",  caption: "Where it all began" },
@@ -52,7 +49,7 @@ const CONFIG = {
     { src: "images/photo6.jpg",  caption: "Perfect day" },
     { src: "images/photo7.jpg",  caption: "Us being us" },
     { src: "images/photo8.jpg",  caption: "My favourite person" },
-    { src: "images/photo9.jpg",  caption: "Adventure mode" },
+    { src: "images/photo9.jpg",  caption: "You make me happy" },
     { src: "images/photo10.jpg", caption: "Cosy moments" },
     { src: "images/photo11.jpg", caption: "Just you" },
     { src: "images/photo12.jpg", caption: "Forever starts here" }
@@ -63,7 +60,7 @@ const CONFIG = {
     { img: "images/photo2.jpg",  title: "That first hello",   text: "Write the memory here. The little details are what make her smile." },
     { img: "images/photo5.jpg",  title: "Our best day",       text: "The day everything felt perfect, and why." },
     { img: "images/photo7.jpg",  title: "Inside joke",        text: "Something only the two of you understand." },
-    { img: "images/photo9.jpg",  title: "That trip",          text: "A place you went together and what you'll never forget about it." },
+    { img: "images/photo6.jpg",  title: "That trip",          text: "A place you went together and what you'll never forget about it." },
     { img: "images/photo10.jpg", title: "Quiet moments",      text: "The small, ordinary times that mean the most." },
     { img: "images/photo12.jpg", title: "Our future",         text: "What you promise her for all the days to come." }
   ],
@@ -120,6 +117,10 @@ const CONFIG = {
   const scale = () => (reduce ? 0.3 : window.innerWidth < 640 ? 0.6 : 1);
   const fill = s => String(s).split('{name}').join(CONFIG.herName).split('{me}').join(CONFIG.myName);
   const pad = n => String(n).padStart(2, '0');
+  const isSmall = () => window.innerWidth < 768;
+  // lazy photos change the page height as they load, so re-measure scroll animations
+  let aosTimer;
+  const refreshAOS = () => { clearTimeout(aosTimer); aosTimer = setTimeout(() => { if (window.AOS) AOS.refresh(); }, 150); };
 
   function h(tag, cls, text) {
     const e = document.createElement(tag);
@@ -173,7 +174,10 @@ const CONFIG = {
 
     function resize() {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      W = window.innerWidth; H = window.innerHeight;
+      const nw = window.innerWidth, nh = window.innerHeight;
+      // phones fire "resize" when the URL bar hides/shows: ignore that small height jitter
+      if (W && nw === W && Math.abs(nh - H) < 160) return;
+      W = nw; H = nh;
       cv.width = W * dpr; cv.height = H * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
@@ -256,7 +260,7 @@ const CONFIG = {
     }
 
     /* ----- effects ----- */
-    function hearts(x, y, n = 8) {
+    function hearts(x, y, n = 9) {
       n = Math.max(1, Math.round(n));
       for (let i = 0; i < n; i++) {
         const a = R(0, 6.283), sp = R(2, 6.5);
@@ -298,7 +302,7 @@ const CONFIG = {
       const g = 0.1, v0 = Math.sqrt(2 * g * Math.max(60, H - targetY));
       add(base({ type: 'rocket', x, y: H + 10, vx: R(-.6, .6), vy: -v0, g, drag: 1, life: 400, color: pick(['#ff6b9d', '#c084fc', '#f9c97c', '#9ec5ff', '#ff8fab']) }));
     }
-    function fireworksShow(count = 5) {
+    function fireworksShow(count = 20) {
       for (let i = 0; i < count; i++) {
         setTimeout(() => firework(R(W * .15, W * .85), R(H * .12, H * .45)), i * 450 + R(0, 200));
       }
@@ -331,8 +335,16 @@ const CONFIG = {
   }
 
   /* ---------- Global click magic ---------- */
-  document.addEventListener('pointerdown', e => {
-    FX.hearts(e.clientX, e.clientY, 6 * scale());
+  // Hearts only on a real TAP (not when a finger starts scrolling)
+  let tapStart = null;
+  document.addEventListener('pointerdown', e => { tapStart = { x: e.clientX, y: e.clientY, t: performance.now() }; });
+  document.addEventListener('pointercancel', () => { tapStart = null; });
+  document.addEventListener('pointerup', e => {
+    if (!tapStart) return;
+    const moved = Math.hypot(e.clientX - tapStart.x, e.clientY - tapStart.y);
+    const dur = performance.now() - tapStart.t;
+    tapStart = null;
+    if (moved < 10 && dur < 600) FX.hearts(e.clientX, e.clientY, 6 * scale());
   });
   document.addEventListener('click', e => {
     const btn = e.target.closest('.btn-love, .btn-ghost');
@@ -381,7 +393,7 @@ const CONFIG = {
       if (window.AOS) AOS.refresh();
       FX.confettiRain(130);
       playHeroIntro();
-      if (birthdayReached) FX.fireworksShow(6);
+      if (birthdayReached) FX.fireworksShow(20);
     }, { once: true });
   }
 
@@ -399,7 +411,7 @@ const CONFIG = {
       FX.hearts(c.x, c.y, 14 * scale());
       balloons(9);
     });
-    $('#btnFireworks').addEventListener('click', () => FX.fireworksShow(5));
+    $('#btnFireworks').addEventListener('click', () => FX.fireworksShow(20));
   }
 
   async function playHeroIntro() {
@@ -441,7 +453,7 @@ const CONFIG = {
     $('#todayBanner').hidden = false;
     const sameDay = new Date().toDateString() === new Date(target).toDateString();
     $('#todayTitle').textContent = sameDay ? 'Today is your day! 🎉' : 'Your special day made the world brighter 🎉';
-    if (appOpened) { FX.fireworksShow(6); FX.confettiRain(120); }
+    if (appOpened) { FX.fireworksShow(20); FX.confettiRain(120); }
   }
 
   /* ---------- Together counter ---------- */
@@ -478,7 +490,8 @@ const CONFIG = {
     const wrap = $('#timeline');
     CONFIG.timeline.forEach((ev, i) => {
       const item = h('article', 'tl-item ' + (i % 2 ? 'right' : 'left'));
-      item.setAttribute('data-aos', i % 2 ? 'fade-left' : 'fade-right');
+      // sideways slide-ins can cause horizontal scroll on phones, so use fade-up there
+      item.setAttribute('data-aos', isSmall() ? 'fade-up' : (i % 2 ? 'fade-left' : 'fade-right'));
       const dot = h('span', 'tl-dot', ev.emoji || '❤');
       const card = h('button', 'tl-card glass');
       card.type = 'button';
@@ -540,7 +553,8 @@ const CONFIG = {
       fig.setAttribute('role', 'button');
       fig.setAttribute('data-aos', 'zoom-in');
       const img = document.createElement('img');
-      img.src = p.src; img.alt = fill(p.caption); img.loading = 'lazy';
+      img.src = p.src; img.alt = fill(p.caption); img.loading = 'lazy'; img.decoding = 'async';
+      img.addEventListener('load', refreshAOS);
       fig.append(img, h('figcaption', '', fill(p.caption)));
       grid.appendChild(fig);
 
@@ -586,12 +600,13 @@ const CONFIG = {
       card.tabIndex = 0;
       card.setAttribute('role', 'button');
       card.setAttribute('aria-label', 'Flip memory card: ' + fill(m.title));
-      card.setAttribute('data-aos', 'flip-left');
+      card.setAttribute('data-aos', isSmall() ? 'fade-up' : 'flip-left');
 
       const inner = h('div', 'flip-inner');
       const front = h('div', 'flip-face flip-front');
       const img = document.createElement('img');
-      img.src = m.img; img.alt = fill(m.title); img.loading = 'lazy';
+      img.src = m.img; img.alt = fill(m.title); img.loading = 'lazy'; img.decoding = 'async';
+      img.addEventListener('load', refreshAOS);
       front.append(img, h('span', 'flip-hint', 'Tap to flip ♡'));
       const back = h('div', 'flip-face flip-back');
       back.append(h('h3', '', fill(m.title)), h('p', '', fill(m.text)));
@@ -706,8 +721,7 @@ const CONFIG = {
   ======================================================= */
   function initCake() {
     const candlesEl = $('#candles'), cake = $('#cake');
-    const wishMsg = $('#wishMsg'), relight = $('#btnRelight'), blowBtn = $('#btnBlow'), micBtn = $('#btnMic');
-    const micStatus = $('#micStatus');
+    const wishMsg = $('#wishMsg'), relight = $('#btnRelight'), blowBtn = $('#btnBlow');
     $('#wishTitle').textContent = fill(CONFIG.wishTitle);
     $('#wishSub').textContent = fill(CONFIG.wishSub);
 
@@ -731,18 +745,16 @@ const CONFIG = {
     function checkDone() {
       if (finished || candles().some(c => !c.classList.contains('out'))) return;
       finished = true;
-      stopMic();
       wishMsg.classList.add('show');
       blowBtn.hidden = true; relight.hidden = false;
       const cp = center(cake);
       FX.confettiBurst(cp.x, cp.y, 140);
-      FX.fireworksShow(7);
+      FX.fireworksShow(20);
       FX.confettiRain(90);
       balloons(10);
       setTimeout(() => wishMsg.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' }), 500);
     }
     async function blowAll() {
-      stopMic();
       for (const c of candles()) { snuff(c); await sleep(150); }
       checkDone();
     }
@@ -752,46 +764,8 @@ const CONFIG = {
       candles().forEach(c => c.classList.remove('out'));
       wishMsg.classList.remove('show');
       finished = false; relight.hidden = true; blowBtn.hidden = false;
-      micStatus.textContent = '';
     });
     cake.addEventListener('click', () => { restart(cake, 'spin'); const c = center(cake); FX.sparkles(c.x, c.y, 14); });
-
-    /* --- microphone blow detection (optional, needs permission + https) --- */
-    let stream = null, ac = null, timer = null;
-    function stopMic() {
-      clearInterval(timer); timer = null;
-      if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
-      if (ac) { ac.close().catch(() => {}); ac = null; }
-      micBtn.textContent = '🎤 Use my microphone';
-    }
-    micBtn.addEventListener('click', async () => {
-      if (timer) { stopMic(); micStatus.textContent = ''; return; }
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        micStatus.textContent = 'Microphone is not available here, so use the button instead 💨'; return;
-      }
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      } catch (err) {
-        micStatus.textContent = 'Microphone blocked, so use the button instead 💨'; return;
-      }
-      const Ctx = window.AudioContext || window.webkitAudioContext;
-      ac = new Ctx();
-      const an = ac.createAnalyser();
-      an.fftSize = 512;
-      ac.createMediaStreamSource(stream).connect(an);
-      const data = new Uint8Array(an.fftSize);
-      let loud = 0;
-      micBtn.textContent = '🛑 Stop listening';
-      micStatus.textContent = 'Listening… take a deep breath and blow! 🌬️';
-      timer = setInterval(() => {
-        an.getByteTimeDomainData(data);
-        let sum = 0;
-        for (let i = 0; i < data.length; i++) { const v = (data[i] - 128) / 128; sum += v * v; }
-        const rms = Math.sqrt(sum / data.length);
-        loud = rms > 0.12 ? loud + 1 : Math.max(0, loud - 1);
-        if (loud >= 5) { micStatus.textContent = ''; blowAll(); }
-      }, 50);
-    });
   }
 
   /* =======================================================

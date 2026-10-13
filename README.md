@@ -60,3 +60,7 @@ Send her the link, ideally on her birthday morning (16 October) when the countdo
 - The microphone "blow the candles" feature needs `https` (GitHub Pages is fine). There is always a button fallback.
 - Click anywhere on the page for little hearts, tap the balloons to pop them, and use the 🌙 button for night-sky mode.
 - If someone has "reduce motion" turned on in their device settings, the animations are toned down automatically.
+
+## Mobile support
+
+The site is built mobile-first and was checked at 320, 360, 390 and 768 px wide and on a landscape phone. It has no sideways scrolling, tap targets are finger-sized, and the layout respects notches and the iPhone home bar. On phones the effects are lighter so scrolling stays smooth.

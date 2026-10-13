@@ -24,14 +24,20 @@
 [hidden] { display: none !important; }
 html { scroll-behavior: smooth; }
 
+html { background: #f8e9f6; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; overflow-x: hidden; }
 body {
   margin: 0;
   font-family: var(--font-body);
   color: var(--ink);
-  background: linear-gradient(160deg, #fff0f6 0%, #f5e9ff 50%, #ffe9ef 100%) fixed;
+  background: transparent; /* <-- ADD THIS LINE */
   min-height: 100vh;
   overflow-x: hidden;
   -webkit-tap-highlight-color: transparent;
+}
+/* Fixed gradient layer (background-attachment:fixed is broken/janky on iOS & Android) */
+body::before {
+  content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background: linear-gradient(160deg, #fff0f6 0%, #f5e9ff 50%, #ffe9ef 100%);
 }
 body.locked, body.no-scroll { overflow: hidden; }
 
@@ -41,8 +47,8 @@ body.night {
   --glass: rgba(45, 22, 80, .55);
   --glass-b: rgba(255, 255, 255, .16);
   --shadow: 0 12px 40px rgba(0, 0, 0, .35);
-  background: linear-gradient(160deg, #150a2e 0%, #2a1250 60%, #3b1a5e 100%) fixed;
 }
+body.night::before { background: linear-gradient(160deg, #150a2e 0%, #2a1250 60%, #3b1a5e 100%); }
 .stars { position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0; transition: opacity 1s; }
 body.night .stars { opacity: 1; }
 .stars i { position: absolute; width: 2px; height: 2px; border-radius: 50%; background: #fff; animation: twinkle 3s ease-in-out infinite; }
@@ -357,4 +363,143 @@ body.opened .music, body.opened .theme-btn { opacity: 1; pointer-events: auto; }
 /* ---------- Accessibility ---------- */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+}
+
+
+/* =========================================================
+   MOBILE & RESPONSIVE LAYER
+   (loaded last so it overrides the desktop rules above)
+   ========================================================= */
+
+/* ---- Touch basics ---- */
+button, a, [role=button], .flip, .g-item, .cake { touch-action: manipulation; }
+.btn-love, .btn-ghost { justify-content: center; text-align: center; max-width: 100%; min-height: 48px; }
+.scroll-hint { padding: .8rem 1.2rem; }
+.hero-name { overflow-wrap: anywhere; }
+.hero { min-height: 100vh; min-height: 100svh; padding-top: calc(6rem + env(safe-area-inset-top)); }
+
+/* ---- Countdown: always 4 across ---- */
+.cd { display: grid; grid-template-columns: repeat(4, 1fr); gap: .6rem; max-width: 480px; margin: 0 auto 2rem; }
+.cd-box { min-width: 0; padding: .8rem .25rem; }
+.cd-box b { font-size: clamp(1.45rem, 7vw, 2rem); }
+.cd-box small { font-size: clamp(.58rem, 2.6vw, .72rem); letter-spacing: .06em; }
+
+/* ---- Navbar ---- */
+.navbar-love { padding-top: calc(.8rem + env(safe-area-inset-top)); }
+.navbar-love.scrolled { padding-top: calc(.45rem + env(safe-area-inset-top)); }
+.navbar-toggler { min-width: 46px; min-height: 46px; }
+.navbar-collapse { max-height: calc(100vh - 90px); max-height: calc(100dvh - 90px); overflow-y: auto; }
+@media (max-width: 991px) { .navbar-nav .nav-link { padding: .75rem .5rem; } }
+
+/* ---- Envelope gate ---- */
+#gate { overflow-y: auto; padding-top: calc(1rem + env(safe-area-inset-top)); padding-bottom: calc(1rem + env(safe-area-inset-bottom)); }
+@media (max-height: 480px) {
+  .gate-hint { font-size: 1.7rem; margin-bottom: .6rem; }
+  .gate-tap { margin-top: .8rem; }
+  .envelope { transform: scale(.8); margin: -18px auto; }
+}
+
+/* ---- Candles: real 30x78 tap area, wax stick drawn with ::after ---- */
+.candles { gap: 0; height: 78px; }
+.candle { width: 30px; height: 78px; background: none; }
+.candle::after { content: ''; position: absolute; left: 9px; bottom: 0; width: 12px; height: 46px; border-radius: 3px; background: repeating-linear-gradient(135deg, #fff 0 6px, #ff9ec0 6px 12px); }
+.candle .flame, .candle .smoke { bottom: 46px; }
+.plate { max-width: 88vw; }
+
+/* ---- Floating controls (safe-area aware) ---- */
+.music { right: calc(12px + env(safe-area-inset-right)); bottom: calc(12px + env(safe-area-inset-bottom)); }
+.theme-btn { left: calc(12px + env(safe-area-inset-left)); bottom: calc(12px + env(safe-area-inset-bottom)); }
+.toast-msg { bottom: calc(80px + env(safe-area-inset-bottom)); }
+.music input[type=range] { height: 28px; }
+
+/* ---- Photo viewer ---- */
+#lightbox { height: 100vh; height: 100dvh; overscroll-behavior: contain; }
+#lbImg { max-height: 70vh; max-height: 70dvh; }
+.lb-close { top: calc(12px + env(safe-area-inset-top)); right: calc(12px + env(safe-area-inset-right)); }
+
+/* ---- Sticky :hover on touch screens ---- */
+@media (hover: none) {
+  .btn-love:hover, .btn-ghost:hover, .tl-card:hover, .seal:hover, .music button:hover, .theme-btn:hover { transform: none; }
+  .envelope:hover .env-seal { transform: none; }
+  .g-item:hover img { transform: none; }
+  .lb-btn:hover { background: rgba(255, 255, 255, .14); transform: none; }
+}
+
+/* ---- Tablets and phones ---- */
+@media (max-width: 767px) {
+  /* lighter blur = smoother scrolling on phones */
+  .glass, .btn-ghost, .navbar-love.scrolled, .navbar-collapse, .flip-hint {
+    -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  }
+  section { padding: 4rem 0; }
+  .section-sub { margin-bottom: 1.8rem; padding: 0 .4rem; }
+
+  .tl-card { padding: 1rem 1.05rem; min-height: 56px; }
+
+  /* photo viewer: arrows move below the picture so they never cover it */
+  .lb-btn { width: 50px; height: 50px; }
+  .lb-prev, .lb-next { top: auto; margin-top: 0; bottom: calc(22px + env(safe-area-inset-bottom)); }
+  .lb-prev { left: 18%; }
+  .lb-next { right: 18%; }
+  .lb-stage { padding: 4.2rem 1rem calc(5.2rem + env(safe-area-inset-bottom)); }
+  #lbImg { max-width: 94vw; max-height: 62vh; max-height: 62dvh; }
+}
+
+/* ---- Phones ---- */
+@media (max-width: 575px) {
+  .hero-actions { flex-direction: column; align-items: stretch; max-width: 320px; margin: 0 auto; }
+  .hero-sub { font-size: .98rem; padding: 0 .4rem; }
+  .hero-pre { font-size: .85rem; letter-spacing: .03em; }
+
+  .together { padding: 1.3rem 1rem; }
+  .together .btn-love { width: 100%; }
+  .together-text { font-size: .92rem; }
+
+  .gallery { column-gap: 10px; }
+  .g-item { margin-bottom: 10px; border-radius: 12px; min-height: 110px; background: linear-gradient(135deg, #ffd6e7, #e4d4ff); }
+  .g-item figcaption { font-size: .72rem; padding: 1.1rem .6rem .5rem; }
+
+  .flip-grid { grid-template-columns: 1fr; max-width: 380px; margin: 0 auto; gap: 18px; }
+  .flip { height: min(400px, 108vw); }
+  .flip-back { padding: 1.2rem; overflow-y: auto; }
+  .flip-back h3 { font-size: 1.9rem; }
+  .flip-back p { font-size: .95rem; line-height: 1.6; }
+
+  .reason-card { font-size: 1.1rem; min-height: 110px; padding: 1.3rem 1rem; }
+  .jar-wrap { transform: scale(.9); }
+
+  .paper-in { padding: 1.6rem 1.1rem 1.4rem; }
+  .paper .sign { font-size: 2.1rem; }
+  .seal { width: 96px; height: 96px; }
+
+  .cake-actions { flex-direction: column; align-items: stretch; width: 100%; max-width: 320px; }
+  .wish p { padding: 0 .6rem; }
+
+  footer { padding: 3rem 1rem calc(7rem + env(safe-area-inset-bottom)); }
+  .theme-btn { width: 46px; height: 46px; font-size: 1.15rem; }
+  .music { padding: .3rem .4rem; }
+  .music button { width: 40px; height: 40px; }
+  .toast-msg { font-size: .85rem; }
+}
+
+/* ---- Very narrow phones (320px) ---- */
+@media (max-width: 360px) {
+  .cd { gap: .4rem; }
+  .hero-line1 { font-size: 2.2rem; }
+  .navbar-brand { font-size: 1.7rem !important; }
+  .envelope { width: 250px; height: 170px; }
+  .env-letter { height: 146px; }
+  .envelope.open .env-letter { transform: translateY(-110px); }
+}
+
+/* ---- Landscape phones (short screens) ---- */
+@media (max-height: 500px) and (orientation: landscape) {
+  .hero { align-items: flex-start; padding-top: calc(5rem + env(safe-area-inset-top)); }
+  section { padding: 3rem 0; }
+  .lb-prev, .lb-next { top: 50%; bottom: auto; margin-top: -25px; }
+  .lb-prev { left: calc(10px + env(safe-area-inset-left)); }
+  .lb-next { right: calc(10px + env(safe-area-inset-right)); }
+  .lb-stage { padding: 1rem 4.5rem; }
+  #lbImg { max-height: 62vh; max-height: 62dvh; }
+  .lb-cap { margin: .5rem 0 .1rem; font-size: .9rem; }
 }
