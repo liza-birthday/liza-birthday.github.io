@@ -12,7 +12,7 @@
 const CONFIG = {
   herName: "Lizaa",                 // <-- her name
   myName: "Neev",                 // <-- your name
-  birthday: "2026-10-15T00:00:02",     // her birthday, local time (YYYY-MM-DDTHH:MM:SS)
+  birthday: "2026-10-15T00:00:00",     // her birthday, local time (YYYY-MM-DDTHH:MM:SS)
   startDate: "2024-10-18",             // the day your story began (YYYY-MM-DD)
   musicFile: "audio/song.mp3",         // put your song in the audio folder
   candleCount: 5,
@@ -91,15 +91,17 @@ const CONFIG = {
   ],
 
   /* Love letter — each string is one paragraph, typed out line by line */
-  letter: {
-    title: "My dearest {name},",
+    letter: {
+    title: "My dearest Lizaa,",
     lines: [
-      "Happy Birthday, my love. Today the world celebrates the day it got you, and I'm the luckiest person in it.",
-      "Since you came into my life, everything feels softer and brighter. Even the plain days have a little sparkle because you're in them.",
-      "Thank you for your patience, your laughter, and the way you love me exactly as I am.",
-      "Write your own heartfelt words here: a promise, a memory, something only you would say to her.",
-      "I hope this year brings you every happiness you deserve, and I hope I'm beside you for all of it.",
-      "I love you more than these words can ever hold."
+      "Happy Birthday, my love. Today the whole world celebrates the day you were born, and I get to celebrate the reason my life feels so full.",
+      "It began at the NCC Ground, on a day that looked completely ordinary. I had no idea that one meeting would quietly become my favourite chapter.",
+      "Then came Basil Valley Cafe, my nervous smile, and the way you made me feel at ease anyway. I think my heart already knew what my mind was still trying to understand.",
+      "There was no single moment when I fell in love with you. It happened gradually, like morning light, until one day I realised you had become everything to me: my peace, my happiness, my home.",
+      "Thank you for staying on the days I wasn't at my best. Thank you for your patience, your laughter, and for loving me exactly as I am. You made the hard days lighter and the good days unforgettable.",
+      "I made this little website to keep our memories in one place, but every photo, every card and every reason in that jar is only a small part of what I feel. I could never write them all down, because there is always one more reason.",
+      "So on your birthday, this is my wish: that every smile you give away comes back to you twice, that every dream you carry finds its way to you, and that I am right beside you to see it all.",
+      "I love you today, tomorrow, and on every day after that."
     ],
     signature: "Forever yours, Neev ❤"
   }
